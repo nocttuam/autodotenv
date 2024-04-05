@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
-  
+
 ANSWER=false
+SKIP_CONFIRM=${AUTODOTENV_SKIP_CONFIRM:-false}
 
 function askYesNo {
     echo -n "$1 [Yes/no]: "
@@ -21,7 +22,11 @@ function source_env() {
         # test .env syntax
         zsh -fn .env || echo 'dotenv: error when sourcing `.env` file' >&2
 
-        askYesNo "Load environment variables used in .env file?" true
+        if [[ "$SKIP_CONFIRM" = true ]]; then
+            ANSWER=true
+        else
+            askYesNo "Load environment variables used in .env file?" true
+        fi
 
         if [[ "$ANSWER" = true ]]; then
             echo "Loading .env file..."
